@@ -23,4 +23,23 @@ export class DeviceController extends Controller {
       next(error);
     }
   }
+
+  add = async (req: Request, res: Response, next: NextFunction) => {
+    const { id, name, url, token } = req.body;
+
+    try {
+      const { data, error } = await this.supabase.from('devices')
+        .insert({ id, name, url, token });
+
+      if (error) throw new Error(error.message);
+
+      return res.status(200).json({
+        status: true,
+        message: 'device added successfully',
+        results: data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
