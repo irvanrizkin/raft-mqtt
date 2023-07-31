@@ -2,12 +2,15 @@ require('dotenv').config();
 import express, { Request, Response } from "express";
 import cors from 'cors';
 import { deviceRouter } from "./src/routes/device.routes";
+import { MqttSingleton } from "./src/services/MqttSingleton";
 
 const app = express();
 
 app.use(cors());
 
 app.use(express.json());
+
+MqttSingleton.getInstance();
 
 app.get('/', (req: Request, res: Response) => {
   res.json(
