@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Controller } from "./Controller";
 import { sub } from "date-fns";
+import { CustomError } from "../utils/CustomError";
 
 export class MeasurementController extends Controller {
   constructor() {
@@ -15,9 +16,9 @@ export class MeasurementController extends Controller {
       if (period) {
         const procedure = this.getProcedureFromPeriod(period.toString());
 
-        const { data, error } = await this.listAverageByPeriod(id, procedure);
+        const { data, error, status } = await this.listAverageByPeriod(id, procedure);
 
-        if (error) throw new Error(error.message);
+        if (error) throw new CustomError(error.message, status);
 
         return res.status(200).json({
           status: true,
@@ -26,9 +27,9 @@ export class MeasurementController extends Controller {
         });
       }
 
-      const { data, error } = await this.listLatest30Min(id);
+      const { data, error, status } = await this.listLatest30Min(id);
 
-      if (error) throw new Error(error.message);
+      if (error) throw new CustomError(error.message, status);
 
       return res.status(200).json({
         status: true,

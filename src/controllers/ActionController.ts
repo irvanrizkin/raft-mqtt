@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { MqttSingleton } from "../services/MqttSingleton";
 import { Controller } from "./Controller";
+import { CustomError } from "../utils/CustomError";
 
 export class ActionController extends Controller {
   private mqttSingleton: MqttSingleton;
@@ -19,7 +20,7 @@ export class ActionController extends Controller {
         .limit(1)
         .single();
 
-      if (!data) throw new Error('device not found for open valve');
+      if (!data) throw new CustomError('device not found for open valve', 404);
 
       this.mqttSingleton.mqttClient.sendMessage(`${id}/valve/${flow}`, '');
 
