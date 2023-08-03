@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { Controller } from "./Controller";
 import { CustomError } from "../utils/CustomError";
+import { MqttSingleton } from "../services/MqttSingleton";
 
 export class DeviceController extends Controller {
+  mqttSingleton: MqttSingleton;
   constructor() {
     super();
+    this.mqttSingleton = MqttSingleton.getInstance();
   }
 
   list = async (req: Request, res: Response, next: NextFunction) => {
@@ -34,6 +37,8 @@ export class DeviceController extends Controller {
 
       if (error) throw new CustomError(error.message, status);
 
+      this.mqttSingleton.subscribeAll();
+
       return res.status(200).json({
         status: true,
         message: 'device added successfully',
@@ -61,6 +66,8 @@ export class DeviceController extends Controller {
         .eq('id', id);
 
       if (error) throw new Error(error.message);
+
+      this.mqttSingleton.subscribeAll();
 
       return res.status(204).json({
         status: true,
