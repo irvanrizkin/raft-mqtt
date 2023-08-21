@@ -22,11 +22,17 @@ export class ActionController extends Controller {
 
       if (!data) throw new CustomError('device not found for open valve', 404);
 
+      await this.supabase.from('logs')
+        .insert({
+          summary: `sending command to open valve on ${id} for ${flow} ml`,
+          source: 'mqtt'
+        });
+
       this.mqttSingleton.mqttClient.sendMessage(`${id}/valve/${flow}`, '');
 
       await this.supabase.from('logs')
         .insert({
-          summary: `valve opened on ${id} for ${flow} ml`,
+          summary: `command to open valve on ${id} for ${flow} ml sent successfully`,
           source: 'mqtt'
         });
 
