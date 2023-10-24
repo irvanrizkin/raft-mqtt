@@ -50,7 +50,7 @@ export class MqttSingleton {
       data?.map((device) => {
         this.mqttClient.addSubscriber(`${device.id}/+`);
       })
-      this.mqttClient.addSubscriber(`internal/mqtt-stresser/+`);
+      this.mqttClient.addSubscriber(`internal/mqtt-stresser/#`);
       console.log('resubscribe event occured');
     } catch (error) {
       console.log(error);
